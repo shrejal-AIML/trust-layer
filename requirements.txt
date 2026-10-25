@@ -1,0 +1,7 @@
+pypdf
+sentence-transformers
+chromadb
+openai
+python-dotenv
+tqdm
+pytest

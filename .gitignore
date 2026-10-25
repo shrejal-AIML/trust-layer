@@ -1,0 +1,7 @@
+.venv/
+.env
+data/chroma/
+data/raw/
+logs/
+__pycache__/
+.pytest_cache/
