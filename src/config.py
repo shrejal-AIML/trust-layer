@@ -20,6 +20,11 @@ CHUNK_TOKENS = 500
 CHUNK_OVERLAP = 50
 COLLECTION = "trust_layer_chunks"
 TOP_K = 5
+# Retrieval
+POOL_K = 30          # hits fetched from EACH retriever before fusion
+CANDIDATES_K = 20    # fused candidates passed to the reranker
+RRF_K = 60           # standard RRF constant
+RERANK_MODEL = "BAAI/bge-reranker-base"
 
 # LLM
 LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1")
