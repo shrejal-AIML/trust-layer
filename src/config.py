@@ -30,3 +30,9 @@ RERANK_MODEL = "BAAI/bge-reranker-base"
 LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "") or "none"
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+# Verification
+NLI_MODEL = "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
+NLI_ENTAIL_THRESHOLD = 0.90   # at or above this, skip the LLM judge
+NLI_WINDOW_SENTENCES = 3      # evidence is split into windows of 3 sentences
+NLI_WINDOW_STRIDE = 2
+JUDGE_CONFIDENCE = 0.80       # confidence assigned when the LLM judge says SUPPORTED
