@@ -1,4 +1,4 @@
-from src.graph.verified import print_report
+from src.verification.report import print_report
 from src.retrieval.search import search
 from src.verification.pipeline import verify_answer
 

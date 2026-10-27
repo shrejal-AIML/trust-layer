@@ -36,8 +36,16 @@ def parse_citations(answer: str, passages: list[dict]) -> tuple[list[str], list[
     return cited, invalid
 
 
-def generate_answer(question: str, passages: list[dict]) -> dict:
-    user_msg = f"Passages:\n\n{build_context(passages)}\n\nQuestion: {question}\n\nAnswer:"
+def generate_answer(question: str, passages: list[dict], avoid: list[str] | None = None) -> dict:
+    user_msg = f"Passages:\n\n{build_context(passages)}\n\nQuestion: {question}\n\n"
+    if avoid:
+        listed = "\n".join(f"- {claim}" for claim in avoid)
+        user_msg += (
+            "A previous draft contained these statements, which could not be verified. "
+            "Leave them out unless the passages clearly support them:\n"
+            f"{listed}\n\n"
+        )
+    user_msg += "Answer:"
     answer = chat([
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": user_msg},
