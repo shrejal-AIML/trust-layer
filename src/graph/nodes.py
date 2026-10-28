@@ -16,7 +16,9 @@ def merge_passages(old: list[dict], new: list[dict], limit: int = MAX_CONTEXT_PA
 
 def retrieve(state: GraphState) -> dict:
     result = search(state["query"], mode=state["mode"], k=TOP_K)
-    return {"passages": merge_passages(state["passages"], result["passages"])}
+    # Keep earlier passages only if they backed some claim; after an abstention start fresh.
+    old = state["passages"] if state["claims"] else []
+    return {"passages": merge_passages(old, result["passages"])}
 
 
 def generate(state: GraphState) -> dict:
@@ -35,12 +37,13 @@ def verify(state: GraphState) -> dict:
 
 def rewrite(state: GraphState) -> dict:
     unsupported = [c["claim"] for c in state["claims"] if c["verdict"] != SUPPORTED]
-    return {"query": rewrite_query(state["question"], unsupported), "loops": state["loops"] + 1}
+    tried = list(dict.fromkeys([h["query"] for h in state["history"]] + [state["query"]]))
+    return {"query": rewrite_query(state["question"], unsupported, tried), "loops": state["loops"] + 1}
 
 
 def route(state: GraphState) -> str:
-    """Loop only when the draft has unsupported claims AND loop budget remains."""
-    if state["score"]["decision"] == "revise" and state["loops"] < MAX_LOOPS:
+    """Retry (rewrite + re-retrieve) on unsupported claims or an abstention, while loop budget remains."""
+    if state["score"]["decision"] in ("revise", "abstain") and state["loops"] < MAX_LOOPS:
         return "rewrite"
     return "finalize"
 

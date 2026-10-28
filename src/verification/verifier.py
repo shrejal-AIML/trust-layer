@@ -1,9 +1,10 @@
 import re
 
-from src.config import (NLI_ENTAIL_THRESHOLD, NLI_MODEL, NLI_WINDOW_SENTENCES,
-                        NLI_WINDOW_STRIDE)
+from src.config import (NLI_ENTAIL_THRESHOLD, NLI_MAX_WINDOWS, NLI_MODEL,
+                        NLI_WINDOW_SENTENCES, NLI_WINDOW_STRIDE)
 from src.generation.answer import build_context
 from src.llm import chat, extract_json
+from src.retrieval.bm25 import tokenize
 
 SUPPORTED = "SUPPORTED"
 CONTRADICTED = "CONTRADICTED"
@@ -45,13 +46,20 @@ def _get_nli():
         _nli = (tokenizer, model, labels)
     return _nli
 
+def _top_windows(claim: str, windows: list[tuple[str, str]],
+                 limit: int = NLI_MAX_WINDOWS) -> list[tuple[str, str]]:
+    """Keep the windows sharing the most words with the claim; NLI cost no longer scales with evidence size."""
+    claim_terms = set(tokenize(claim))
+    ranked = sorted(windows, key=lambda w: len(claim_terms & set(tokenize(w[1]))), reverse=True)
+    return ranked[:limit]
+
 
 def nli_scores(claim: str, evidence: list[dict], batch_size: int = 16) -> dict:
     """Best entailment / contradiction probability over all evidence windows."""
     import torch
 
     tokenizer, model, labels = _get_nli()
-    windows = [w for p in evidence for w in make_windows(p["chunk_id"], p["text"])]
+    windows = _top_windows(claim, [w for p in evidence for w in make_windows(p["chunk_id"], p["text"])])
     best = {"entail": 0.0, "entail_id": None, "contradict": 0.0}
     for i in range(0, len(windows), batch_size):
         batch = windows[i:i + batch_size]

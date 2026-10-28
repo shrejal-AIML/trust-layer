@@ -24,7 +24,7 @@ def _patch_graph(monkeypatch, claims: list[dict]) -> list[int]:
     monkeypatch.setattr(nodes, "search", lambda q, mode, k: {"passages": passages, "candidates": []})
     monkeypatch.setattr(nodes, "generate_answer",
                         lambda q, p, avoid=None: {"answer": "draft", "cited_ids": [], "invalid_citations": []})
-    monkeypatch.setattr(nodes, "rewrite_query", lambda q, unsupported: "better query")
+    monkeypatch.setattr(nodes, "rewrite_query", lambda q, unsupported, tried=None: "better query")
     monkeypatch.setattr(nodes, "verify_answer", fake_verify)
     return verify_calls
 
@@ -39,8 +39,8 @@ def test_route_loops_only_while_budget_remains():
     assert route({"score": {"decision": "revise"}, "loops": 0}) == "rewrite"
     assert route({"score": {"decision": "revise"}, "loops": MAX_LOOPS}) == "finalize"
     assert route({"score": {"decision": "return"}, "loops": 0}) == "finalize"
-    assert route({"score": {"decision": "abstain"}, "loops": 0}) == "finalize"
-
+    assert route({"score": {"decision": "abstain"}, "loops": 0}) == "rewrite"
+    assert route({"score": {"decision": "abstain"}, "loops": MAX_LOOPS}) == "finalize"
 
 def test_finalize_keeps_everything_when_all_supported():
     out = finalize_claims("full answer", [_claim("a", "SUPPORTED"), _claim("b", "SUPPORTED")])

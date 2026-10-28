@@ -35,8 +35,12 @@ NLI_MODEL = "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
 NLI_ENTAIL_THRESHOLD = 0.90   # at or above this, skip the LLM judge
 NLI_WINDOW_SENTENCES = 3      # evidence is split into windows of 3 sentences
 NLI_WINDOW_STRIDE = 2
+NLI_MAX_WINDOWS = 6
 JUDGE_CONFIDENCE = 0.80       # confidence assigned when the LLM judge says SUPPORTED
 # Decision loop
 MAX_LOOPS = 2                # re-retrieve/rewrite attempts after the first draft
 MAX_CONTEXT_PASSAGES = 8     # cap on passages kept across loops
 MIN_KEPT_FRACTION = 0.5      # if fewer claims than this survive verification, abstain
+# LLM runtime
+LLM_TIMEOUT_S = 60
+LLM_CACHE_PATH = ROOT / "data" / "cache" / "llm_cache.jsonl"

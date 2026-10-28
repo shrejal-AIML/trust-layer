@@ -5,3 +5,7 @@ data/raw/
 logs/
 __pycache__/
 .pytest_cache/
+data/cache/
+mlflow.db
+mlruns/
+evaluation/results/

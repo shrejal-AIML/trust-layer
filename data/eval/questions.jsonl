@@ -1,0 +1,15 @@
+{"id": "q01", "question": "What BLEU score did the Transformer achieve on the WMT 2014 English-to-German translation task?", "answerable": true, "must_include": ["28.4"]}
+{"id": "q02", "question": "What BLEU score did the big Transformer achieve on the WMT 2014 English-to-French translation task?", "answerable": true, "must_include": ["41."]}
+{"id": "q03", "question": "What is the capital of Mars?", "answerable": false, "must_include": []}
+{"id": "q04", "question": "How many days did the Transformer train for its WMT 2014 English-to-French result?", "answerable": true, "must_include": ["3.5"]}
+{"id": "q05", "question": "Which optimizer was used to train the Transformer?", "answerable": true, "must_include": ["adam"]}
+{"id": "q06", "question": "Who won the 2018 FIFA World Cup?", "answerable": false, "must_include": []}
+{"id": "q07", "question": "What kind of positional encoding does the Transformer use?", "answerable": true, "must_include": ["cosine"]}
+{"id": "q08", "question": "Which retriever and which generator does the RAG model use?", "answerable": true, "must_include": ["dpr", "bart"]}
+{"id": "q09", "question": "What are the two RAG formulations that differ in how they use retrieved documents?", "answerable": true, "must_include": ["rag-sequence", "rag-token"]}
+{"id": "q10", "question": "What BLEU score did the Transformer get on Japanese-to-English translation?", "answerable": false, "must_include": []}
+{"id": "q11", "question": "What is the non-parametric knowledge source that RAG retrieves from?", "answerable": true, "must_include": ["wikipedia"]}
+{"id": "q12", "question": "What are the reflection tokens used in Self-RAG?", "answerable": true, "must_include": ["retrieve", "isrel", "issup", "isuse"]}
+{"id": "q13", "question": "What does the ISSUP token indicate in Self-RAG?", "answerable": true, "must_include": ["support"]}
+{"id": "q14", "question": "What is the recommended dosage of ibuprofen for adults?", "answerable": false, "must_include": []}
+{"id": "q15", "question": "Which base language model is Self-RAG built on?", "answerable": true, "must_include": ["llama"]}
