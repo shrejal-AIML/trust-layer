@@ -12,4 +12,14 @@
 {"id": "q12", "question": "What are the reflection tokens used in Self-RAG?", "answerable": true, "must_include": ["retrieve", "isrel", "issup", "isuse"]}
 {"id": "q13", "question": "What does the ISSUP token indicate in Self-RAG?", "answerable": true, "must_include": ["support"]}
 {"id": "q14", "question": "What is the recommended dosage of ibuprofen for adults?", "answerable": false, "must_include": []}
-{"id": "q15", "question": "Which base language model is Self-RAG built on?", "answerable": true, "must_include": ["llama"]}
+{"id": "q15", "question": "Which base language model is Self-RAG built on?", "answerable": true, "must_include": ["llama"], "evidence": ["base lm"]}
+{"id": "q16", "question": "How many warmup steps did the Transformer use in its learning rate schedule?", "answerable": true, "must_include": ["4000"]}
+{"id": "q17", "question": "What GPUs was the Transformer trained on?", "answerable": true, "must_include": ["p100"]}
+{"id": "q18", "question": "What similarity search library does RAG use to index the documents?", "answerable": true, "must_include": ["faiss"]}
+{"id": "q19", "question": "Which datasets does Self-RAG evaluate on for short-form question answering and fact verification?", "answerable": true, "must_include": ["popqa", "pubhealth"]}
+{"id": "q20", "question": "Which model was used to generate the training data for Self-RAG's critic?", "answerable": true, "must_include": ["gpt-4"]}
+{"id": "q21", "question": "How do RAG and Self-RAG differ in when they retrieve passages?", "answerable": true, "must_include": ["on demand"]}
+{"id": "q22", "question": "What BLEU score did RAG achieve on WMT 2014 English-to-German translation?", "answerable": false, "must_include": []}
+{"id": "q23", "question": "How does Self-RAG compare with GPT-5 on PopQA?", "answerable": false, "must_include": []}
+{"id": "q24", "question": "What accuracy did the Transformer reach on the PubHealth dataset?", "answerable": false, "must_include": []}
+{"id": "q25", "question": "What is the capital of France according to the documents?", "answerable": false, "must_include": []}

@@ -22,14 +22,21 @@ def load_questions(limit: int | None = None) -> list[dict]:
 
 
 def check_gold() -> None:
-    """Sanity check, no LLM: every gold keyword must appear somewhere in the ingested chunks."""
+    """Sanity check, no LLM: gold keywords must exist in the corpus, evidence inside a single chunk."""
     lines = CHUNKS_PATH.read_text(encoding="utf-8").splitlines()
-    corpus = " ".join(json.loads(line)["text"] for line in lines if line.strip())
+    texts = [json.loads(line)["text"] for line in lines if line.strip()]
+    corpus = " ".join(texts)
     bad = 0
     for q in load_questions():
-        if q["answerable"] and not contains_all(corpus, q["must_include"]):
+        if not q["answerable"]:
+            continue
+        if not contains_all(corpus, q["must_include"]):
             bad += 1
-            print(f"MISSING in corpus: {q['id']} {q['must_include']}  ({q['question']})")
+            print(f"MISSING keyword: {q['id']} {q['must_include']}")
+        if q.get("evidence"):
+            n = sum(contains_all(t, q["evidence"]) for t in texts)
+            print(f"{q['id']} evidence {q['evidence']} found in {n} chunk(s)")
+            bad += n == 0
     print(f"gold check done: {bad} problem(s)")
 
 

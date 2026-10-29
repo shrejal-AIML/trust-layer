@@ -22,6 +22,13 @@ def is_abstained(answer: str) -> bool:
     haystack = normalize(answer)
     return any(normalize(marker) in haystack for marker in ABSTAIN_MARKERS)
 
+def context_hit(question: dict, passage_texts: list[str]) -> bool:
+    """Strict when the question has an `evidence` field: one passage must contain all of it."""
+    needles = question.get("evidence")
+    if needles:
+        return any(contains_all(text, needles) for text in passage_texts)
+    return contains_all(" ".join(passage_texts), question["must_include"])
+
 
 def score_question(question: dict, record: dict) -> dict:
     """Score one system output against one gold question."""
@@ -34,16 +41,16 @@ def score_question(question: dict, record: dict) -> dict:
 
     if answerable:
         correct = not abstained and contains_all(answer, question["must_include"])
-        context_hit = contains_all(" ".join(record["passage_texts"]), question["must_include"])
+        hit = context_hit(question, record["passage_texts"])
     else:
-        correct, context_hit = abstained, None
+        correct, hit = abstained, None
 
     return {
         "id": question["id"],
         "answerable": answerable,
         "abstained": abstained,
         "correct": correct,
-        "context_hit": context_hit,
+        "context_hit": hit,
         "cited_any": bool(cited),
         "citation_valid": sum(c in retrieved for c in cited) / len(cited) if cited else None,
         "faithfulness": n_supported / n_claims if n_claims else None,

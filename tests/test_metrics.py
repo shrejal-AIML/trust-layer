@@ -1,5 +1,4 @@
-from evaluation.metrics import aggregate, contains_all, is_abstained, score_question
-
+from evaluation.metrics import aggregate, context_hit, contains_all, is_abstained, score_question
 
 def _record(answer: str, n_claims: int = 1, n_supported: int = 1) -> dict:
     return {"answer": answer, "passage_ids": ["doc1_chunk0"],
@@ -39,3 +38,9 @@ def test_aggregate_splits_answerable_and_unanswerable():
     metrics = aggregate(rows)
     assert metrics["answer_accuracy"] == 1.0 and metrics["abstain_recall"] == 1.0
     assert metrics["false_abstain_rate"] == 0.0
+
+def test_context_hit_needs_one_passage_when_evidence_is_given():
+    q = {"must_include": ["llama"], "evidence": ["base LM"]}
+    assert not context_hit(q, ["Llama2-chat is a baseline.", "We use a base model."])
+    assert context_hit(q, ["Llama2-chat is a baseline.", "Llama 2-7B as a base LM."])
+    assert context_hit({"must_include": ["a", "b"]}, ["a here", "b there"])

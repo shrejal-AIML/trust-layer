@@ -22,7 +22,7 @@ COLLECTION = "trust_layer_chunks"
 TOP_K = 5
 # Retrieval
 POOL_K = 30          # hits fetched from EACH retriever before fusion
-CANDIDATES_K = 20    # fused candidates passed to the reranker
+CANDIDATES_K = 12   # fused candidates passed to the reranker
 RRF_K = 60           # standard RRF constant
 RERANK_MODEL = "BAAI/bge-reranker-base"
 
