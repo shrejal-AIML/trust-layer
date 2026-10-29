@@ -1,7 +1,7 @@
 import re
 
-from src.config import (NLI_ENTAIL_THRESHOLD, NLI_MAX_WINDOWS, NLI_MODEL,
-                        NLI_WINDOW_SENTENCES, NLI_WINDOW_STRIDE)
+from src.config import (NLI_ENABLED, NLI_ENTAIL_THRESHOLD, NLI_MAX_LENGTH, NLI_MAX_WINDOWS,
+                        NLI_MODEL, NLI_WINDOW_SENTENCES, NLI_WINDOW_STRIDE)
 from src.generation.answer import build_context
 from src.llm import chat, extract_json
 from src.retrieval.bm25 import tokenize
@@ -64,8 +64,8 @@ def nli_scores(claim: str, evidence: list[dict], batch_size: int = 16) -> dict:
     for i in range(0, len(windows), batch_size):
         batch = windows[i:i + batch_size]
         enc = tokenizer([w[1] for w in batch], [claim] * len(batch), truncation="only_first",
-                        max_length=512, padding=True, return_tensors="pt")
-        with torch.no_grad():
+                                                max_length=NLI_MAX_LENGTH, padding=True, return_tensors="pt")
+        with torch.inference_mode():
             probs = torch.softmax(model(**enc).logits, dim=-1)
         for (chunk_id, _), row in zip(batch, probs):
             p = {labels[j]: float(row[j]) for j in range(len(row))}
@@ -94,6 +94,10 @@ def llm_judge(claim: str, evidence: list[dict]) -> dict:
 def verify_claim(claim: dict, passages: list[dict]) -> dict:
     """Check one claim against its cited passages (or all retrieved ones if it cites none)."""
     evidence = [p for p in passages if p["chunk_id"] in claim["cited_ids"]] or passages
+    if not NLI_ENABLED:
+        return {**claim, "nli_entail": 0.0, "nli_contradict": 0.0,
+                "method": "llm_judge", **llm_judge(claim["claim"], evidence)}
+
     nli = nli_scores(claim["claim"], evidence)
     base = {**claim, "nli_entail": round(nli["entail"], 3), "nli_contradict": round(nli["contradict"], 3)}
 

@@ -4,7 +4,9 @@ chromadb
 openai
 python-dotenv
 tqdm
-pytest
 rank_bm25
 langgraph
-mlflow
+fastapi
+uvicorn
+streamlit
+requests
